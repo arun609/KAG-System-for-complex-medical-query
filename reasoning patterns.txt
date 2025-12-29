@@ -1,0 +1,3 @@
+Disease → Drug
+Disease → Drug → Mechanism
+Disease → Drug → Effect

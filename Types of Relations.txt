@@ -1,0 +1,8 @@
+📊 Summary Table (Very Important)
+Relation	Purpose	Example Query
+disease_protein	
+protein_protein	
+drug_protein	
+indication	
+disease_disease		
+pathway_protein	
