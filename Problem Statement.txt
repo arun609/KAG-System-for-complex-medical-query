@@ -1,4 +1,0 @@
-Problem Statement:
-Large language models can answer medical questions but often suffer from hallucinations and lack of interpretability. Complex medical queries frequently require multi-hop reasoning across diverse biomedical entities such as diseases, genes, drugs, and clinical phenotypes—relationships that are not explicitly encoded within LLMs.
-
-This project aims to develop a Knowledge-Augmented Generation (KAG) system that integrates an LLM with PrimeKG, a comprehensive biomedical knowledge graph. The system will retrieve relevant nodes and relations, perform multi-hop reasoning to construct an interpretable evidence chain, and generate medically accurate answers grounded in structured knowledge. The objective is to improve factual accuracy, reasoning transparency, and reliability in medical question answering.

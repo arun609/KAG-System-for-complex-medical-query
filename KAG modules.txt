@@ -1,4 +1,0 @@
-Module 1: Query Understanding
-Module 2: Knowledge Retrieval (PrimeKG)
-Module 3: LLM-Based Reasoning Module
-Module 4: Evaluation & Confidence Scoring
