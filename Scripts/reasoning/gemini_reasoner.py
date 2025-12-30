@@ -1,22 +1,21 @@
 import os
+from config.api_keys import GEMINI_API_KEY
 from google import genai
-from utils import format_knowledge, parse_gemini_output
+from .utils import format_knowledge, parse_gemini_output
 
 class GeminiReasoner:
     def __init__(self):
-        # Ensure your environment variable GEMINI_API_KEY is set
-        api_key = os.environ.get("GEMINI_API_KEY")
-        if not api_key:
-            raise ValueError("GEMINI_API_KEY environment variable not set.")
+        if not GEMINI_API_KEY:
+            raise ValueError("Gemini API key is missing in config/api_keys.py")
 
-        self.client = genai.Client(api_key=api_key)
+        self.client = genai.Client(api_key=GEMINI_API_KEY)
 
         base_dir = os.path.dirname(__file__)
         prompt_path = os.path.join(base_dir, "prompt_template.txt")
 
         # Load the prompt template
         with open(prompt_path, "r", encoding="utf-8") as f:
-            self.prompt_template = f.read()
+         self.prompt_template = f.read()
 
     def reason(self, retrieved_triples, query):
         knowledge_text = format_knowledge(retrieved_triples)

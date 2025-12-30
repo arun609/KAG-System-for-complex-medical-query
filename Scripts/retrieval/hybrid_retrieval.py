@@ -4,6 +4,10 @@ import numpy as np
 from sklearn.preprocessing import minmax_scale
 from sklearn.metrics.pairwise import cosine_similarity
 
+from .intent import detect_intent
+from .retrieval_policy import RETRIEVAL_POLICY
+from .validators import validate_evidence
+
 # ================= PATHS =================
 CORPUS_FILE = "data/filtered/primekg_text_corpus_tagged.txt"
 BM25_FILE   = "data/filtered/bm25.pkl"
@@ -12,8 +16,6 @@ MODEL_FILE  = "data/filtered/embedding_model.pkl"
 # =========================================
 
 TOP_K = 5
-HIGH_CONF = 0.80
-LOW_CONF  = 0.50
 
 GENERIC_TERMS = ["disease", "syndrome", "disorder", "cancer", "condition"]
 BLACKLIST = [
@@ -21,11 +23,62 @@ BLACKLIST = [
     "primary central nervous system lymphoma"
 ]
 
+# ================= QUERY EXPANSION =================
 QUERY_EXPANSION = {
+     # ---------- Cardiovascular ----------
     "high blood pressure": "hypertension",
+    "bp": "hypertension",
     "heart attack": "myocardial infarction",
-    "stroke": "cerebrovascular accident",
+    "cardiac arrest": "myocardial infarction",
+    "chest pain": "angina pectoris",
+
+    # ---------- Diabetes & Metabolism ----------
     "sugar": "diabetes mellitus",
+    "sugar disease": "diabetes mellitus",
+    "high sugar": "diabetes mellitus",
+    "type 2 diabetes": "type 2 diabetes mellitus",
+    "type 1 diabetes": "type 1 diabetes mellitus",
+    "t2dm": "type 2 diabetes mellitus",
+    "t1dm": "type 1 diabetes mellitus",
+
+    # ---------- Neurological ----------
+    "parkinson": "parkinson disease",
+    "parkinson’s": "parkinson disease",
+    "alzheimers": "alzheimer disease",
+    "memory loss": "alzheimer disease",
+    "epilepsy attack": "epilepsy",
+
+    # ---------- Oncology ----------
+    "blood cancer": "leukemia",
+    "lung cancer": "lung carcinoma",
+    "breast cancer": "breast carcinoma",
+
+    # ---------- Respiratory ----------
+    "breathing problem": "dyspnea",
+    "breathing trouble": "dyspnea",
+    "shortness of breath": "dyspnea",
+    "asthma attack": "asthma",
+
+    # ---------- Gastrointestinal ----------
+    "stomach ulcer": "peptic ulcer disease",
+    "acid reflux": "gastroesophageal reflux disease",
+    "gerd": "gastroesophageal reflux disease",
+
+    # ---------- Renal & Hepatic ----------
+    "kidney failure": "renal failure",
+    "liver failure": "hepatic failure",
+
+    # ---------- Drugs (Common names → canonical) ----------
+    "aspirin": "acetylsalicylic acid",
+    "paracetamol": "acetaminophen",
+    "tylenol": "acetaminophen",
+    "blood thinner": "anticoagulant",
+    "pain killer": "analgesic",
+
+    # ---------- General phrasing ----------
+    "medicine for": "treatment of",
+    "drug for": "treatment of",
+    "therapy for": "treatment of",
 }
 
 # ================= LOAD RESOURCES =================
@@ -41,30 +94,47 @@ with open(MODEL_FILE, "rb") as f:
     embed_model = pickle.load(f)
 
 # ================= UTILITIES =================
-def normalize(text):
+def normalize(text: str) -> str:
     text = text.lower()
     text = re.sub(r"[^\w\s]", " ", text)
     return re.sub(r"\s+", " ", text).strip()
 
-def expand_query(query):
+
+def expand_query(query: str) -> str:
     q_norm = normalize(query)
     for layman, clinical in QUERY_EXPANSION.items():
         if layman in q_norm:
             return query + " " + clinical
     return query
 
-def extract_anchor_terms(query):
+
+def extract_anchor_terms(query: str) -> list[str]:
+    # Anchors are weak signals → never hard filters
     return [t for t in normalize(query).split() if len(t) > 4]
 
-def generic_penalty(sentence):
+
+def generic_penalty(sentence: str) -> int:
     return sum(1 for t in GENERIC_TERMS if t in sentence.lower())
 
-# ================= MAIN RETRIEVAL FUNCTION =================
-def retrieve_knowledge(user_query):
-    expanded_query = expand_query(user_query)
+
+# ================= MAIN RETRIEVAL =================
+def retrieve_knowledge(original_query: str) -> list[str]:
+    """
+    Intent-aware, policy-driven hybrid retrieval.
+    Returns a list of PrimeKG sentences.
+    """
+
+    # ---- 1. Intent detection ----
+    intent = detect_intent(original_query)
+    policy = RETRIEVAL_POLICY.get(intent, RETRIEVAL_POLICY["general"])
+    allowed_tags = policy["allowed_tags"]
+
+    # ---- 2. Query normalization ----
+    expanded_query = expand_query(original_query)
     q_norm = normalize(expanded_query)
     anchors = extract_anchor_terms(expanded_query)
 
+    # ---- 3. Similarity scoring ----
     bm25_scores = bm25.get_scores(q_norm.split())
     query_embedding = embed_model.encode([q_norm])
     vec_scores = cosine_similarity(query_embedding, embeddings)[0]
@@ -74,24 +144,50 @@ def retrieve_knowledge(user_query):
 
     candidates = []
 
+    # ---- 4. Candidate filtering (INTENT FIRST) ----
     for idx, sentence in enumerate(corpus):
         sent_l = sentence.lower()
 
-        if not any(a in sent_l for a in anchors):
-            continue
+        # (A) Relation-type constraint (CORE FIX)
+        if allowed_tags:
+            if not any(sentence.startswith(tag) for tag in allowed_tags):
+                continue
+
+        # (B) Blacklist
         if any(b in sent_l for b in BLACKLIST):
             continue
-        if bm25_n[idx] < 0.2 and vec_n[idx] < 0.3:
+
+        # (C) Very weak similarity → skip
+        if bm25_n[idx] < 0.15 and vec_n[idx] < 0.25:
             continue
 
-        score = 0.5 * bm25_n[idx] + 0.5 * vec_n[idx]
+        # (D) Anchor terms → SOFT signal, not blocker
+        anchor_boost = 0.0
+        if anchors and any(a in sent_l for a in anchors):
+            anchor_boost = 0.1
+
+        # ---- 5. Final score ----
+        score = (
+            0.45 * bm25_n[idx]
+            + 0.45 * vec_n[idx]
+            + anchor_boost
+        )
         score -= 0.05 * generic_penalty(sentence)
 
         candidates.append((sentence, score))
 
-    ranked = sorted(candidates, key=lambda x: x[1], reverse=True)
+    # ---- 6. Rank & deduplicate ----
+    seen = set()
+    ranked = []
+    for s, sc in sorted(candidates, key=lambda x: x[1], reverse=True):
+        if s not in seen:
+            ranked.append(s)
+            seen.add(s)
+        if len(ranked) == TOP_K:
+            break
 
-    if not ranked:
+    # ---- 7. Evidence validation (FINAL SAFETY GATE) ----
+    if not validate_evidence(intent, ranked):
         return []
 
-    return [r[0] for r in ranked[:TOP_K]]
+    return ranked
