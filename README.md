@@ -1,39 +1,41 @@
-🧠 Medical KAG System
-Knowledge-Augmented Generation for Complex Medical Queries
-📌 Overview
 
-The Medical KAG System is a prototype web application that answers complex medical queries using a Knowledge-Augmented Generation (KAG) approach.
-Unlike traditional LLM-based systems, this project integrates a biomedical knowledge graph with LLM-based reasoning, ensuring grounded, explainable, and safe responses.
+# 🧠 Medical KAG System
 
-This system is designed as a research and educational prototype, suitable for:
+### Knowledge-Augmented Generation for Complex Medical Queries
 
-Medical & biomedical students
+---
 
-Researchers
+## 📌 Overview
 
-Clinical training professionals
+The **Medical KAG System** is a **prototype web application** that answers **complex medical queries** using a **Knowledge-Augmented Generation (KAG)** approach.
+Unlike traditional LLM-based systems, this project integrates a **biomedical knowledge graph** with **LLM-based reasoning**, ensuring **grounded, explainable, and safe** responses.
 
-AI research demonstrations
+This system is designed as a **research and educational prototype**, suitable for:
 
-⚠️ Disclaimer: This system is for educational and research purposes only. It does not provide clinical or medical advice.
+* Medical & biomedical students
+* Researchers
+* Clinical training professionals
+* AI research demonstrations
 
-🚀 Key Features
+> ⚠️ **Disclaimer:** This system is for educational and research purposes only. It does **not** provide clinical or medical advice.
 
-🔗 Knowledge Graph–Driven Retrieval
+---
 
-🧠 LLM-Based Explainable Reasoning
+## 🚀 Key Features
 
-🔁 Multi-hop Reasoning Support
+* 🔗 **Knowledge Graph–Driven Retrieval**
+* 🧠 **LLM-Based Explainable Reasoning**
+* 🔁 **Multi-hop Reasoning Support**
+* 📊 **Confidence Scoring & Tiering**
+* 🧾 **Explicit Evidence Triples (No Hallucination)**
+* 🛑 **Safe Rejection for Unsupported Queries**
+* 🌐 **Web-Based UI (Prototype)**
 
-📊 Confidence Scoring & Tiering
+---
 
-🧾 Explicit Evidence Triples (No Hallucination)
+## 🧩 System Architecture
 
-🛑 Safe Rejection for Unsupported Queries
-
-🌐 Web-Based UI (Prototype)
-
-🧩 System Architecture
+```
 User Query
    ↓
 Knowledge Graph Retrieval (PrimeKG-style)
@@ -47,29 +49,31 @@ Final Answer
 Confidence Score + Tier
    ↓
 Web UI Display
+```
 
-🛠️ Tech Stack
-Backend
+---
 
-Python
+## 🛠️ Tech Stack
 
-FastAPI
+### Backend
 
-LLM (Gemini API)
+* **Python**
+* **FastAPI**
+* **LLM (Gemini API)**
+* **Knowledge Graph (PrimeKG-inspired dataset)**
 
-Knowledge Graph (PrimeKG-inspired dataset)
+### Frontend
 
-Frontend
+* **React (Vite)**
+* **Tailwind CSS**
+* **Lucide Icons**
+* **REST API Communication**
 
-React (Vite)
+---
 
-Tailwind CSS
+## 📂 Project Structure
 
-Lucide Icons
-
-REST API Communication
-
-📂 Project Structure
+```
 KAG system for complex medical query/
 │
 ├── backend/
@@ -90,59 +94,78 @@ KAG system for complex medical query/
 │   └── package.json
 │
 └── README.md
+```
 
-🧪 Example Queries
+---
 
-Which drug is indicated for ST-elevation myocardial infarction?
+## 🧪 Example Queries
 
-What drugs are used to treat renal osteodystrophy?
+### Tier-1 (Strongly Supported)
 
-Which genes are associated with Parkinson disease?
+* **Which drug is indicated for ST-elevation myocardial infarction?**
+* **What drugs are used to treat renal osteodystrophy?**
+* **Which genes are associated with Parkinson disease?**
 
-Which gene cures diabetes?
+### Safe Rejection (Correct Behavior)
 
-What drug definitively cures cancer?
+* **Which gene cures diabetes?**
+* **What drug definitively cures cancer?**
+* **Treatment for imaginary disease abcdef?**
 
-Treatment for imaginary disease abcdef?
+---
 
-📊 Confidence Tiering
-Tier	Meaning
-Tier 1	Directly supported by explicit KG facts
-Tier 2	Weak or aggregated support
-Tier 3	Not supported (Safe Rejection)
+## 📊 Confidence Tiering
 
-Each answer includes a confidence explanation describing why a tier was assigned.
+| Tier       | Meaning                                 |
+| ---------- | --------------------------------------- |
+| **Tier 1** | Directly supported by explicit KG facts |
+| **Tier 2** | Weak or aggregated support              |
+| **Tier 3** | Not supported (Safe Rejection)          |
 
-🧠 Why KAG (Not Just RAG)?
-Feature	RAG	KAG (This Project)
-Uses structured KG	❌	✅
-Multi-hop reasoning	❌	✅
-Explainable answers	❌	✅
-Medical safety	⚠️	✅
-Confidence scoring	❌	✅
-🧪 Prototype Status
+Each answer includes a **confidence explanation** describing *why* a tier was assigned.
 
-✅ This project is complete as a prototype
+---
+
+## 🧠 Why KAG (Not Just RAG)?
+
+| Feature             | RAG | KAG (This Project) |
+| ------------------- | --- | ------------------ |
+| Uses structured KG  | ❌   | ✅                  |
+| Multi-hop reasoning | ❌   | ✅                  |
+| Explainable answers | ❌   | ✅                  |
+| Medical safety      | ⚠️  | ✅                  |
+| Confidence scoring  | ❌   | ✅                  |
+
+---
+
+## 🧪 Prototype Status
+
+✅ This project is **complete as a prototype**
 ✅ End-to-end system works
-✅ Suitable for academic review, demo, and GitHub submission
+✅ Suitable for **academic review, demo, and GitHub submission**
 
-🔮 Future Work (Optional)
+---
 
-Integration with literature sources (PubMed)
+## 🔮 Future Work (Optional)
 
-Expanded multi-hop KG reasoning
+* Integration with literature sources (PubMed)
+* Expanded multi-hop KG reasoning
+* Research vs Training mode switch
+* Visualization of full KG subgraphs
+* Deployment to cloud (AWS / GCP)
 
-Research vs Training mode switch
+---
 
-Visualization of full KG subgraphs
+## 👨‍💻 Author
 
-Deployment to cloud (AWS / GCP)
-
-👨‍💻 Author
-
-Arun M
+**Arun M**
 B.Tech – Artificial Intelligence & Data Science
 
-📜 License
+---
 
-This project is released for academic and educational use only.
+## 📜 License
+
+This project is released for **academic and educational use only**.
+
+---
+
