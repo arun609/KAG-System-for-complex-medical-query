@@ -1,12 +1,25 @@
-from fastapi import FastAPI
+import torch  # <--- ADD THIS LINE AT THE VERY TOP
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import Optional, List
 
 # ---- Import your existing pipeline modules ----
 from Scripts.retrieval.hybrid_retrieval import retrieve_knowledge
 from Scripts.reasoning.gemini_reasoner import GeminiReasoner
 from Scripts.evaluation.confidence_scorer import compute_confidence
 from Scripts.evaluation.evaluator import evaluator
+import database
+import logging
+
+# Configure logging
+logging.basicConfig(
+    filename='debug_api.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    force=True
+)
+logger = logging.getLogger(__name__)
 
 # ---- FastAPI app ----
 app = FastAPI(
@@ -25,8 +38,23 @@ app.add_middleware(
 )
 
 # ---- Request schema ----
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+class RegisterRequest(BaseModel):
+    username: str
+    password: str
+    role: str = "student"
+
 class QueryRequest(BaseModel):
     query: str
+    user_id: Optional[int] = None
+
+class HistoryResponse(BaseModel):
+    query: str
+    response: str
+    timestamp: str
 
 
 # ---- Root endpoint ----
@@ -34,6 +62,24 @@ class QueryRequest(BaseModel):
 def health_check():
     return {"status": "Medical KAG backend running"}
 
+@app.post("/login")
+def login(request: LoginRequest):
+    user = database.get_user(request.username, request.password)
+    # user is (id, username, role)
+    if user:
+        return {"id": user[0], "username": user[1], "role": user[2], "status": "success"}
+    raise HTTPException(status_code=401, detail="Invalid credentials")
+
+@app.post("/register")
+def register(request: RegisterRequest):
+    if database.add_user(request.username, request.password, request.role):
+        return {"status": "created", "message": "User registered successfully"}
+    raise HTTPException(status_code=400, detail="Username already exists")
+
+@app.get("/history/{user_id}", response_model=List[HistoryResponse])
+def get_user_history(user_id: int):
+    history = database.get_history(user_id)
+    return history
 
 # ---- Main query endpoint ----
 @app.post("/query")
@@ -54,7 +100,10 @@ def run_query(request: QueryRequest):
     # ============================
     # Module 2: Retrieval
     # ============================
+    logger.info(f"Starting retrieval for query: {query}")
     retrieval_result = retrieve_knowledge(query)
+    logger.info(f"Retrieval finished. Result type: {type(retrieval_result)}")
+    logger.info(f"Retrieval content: {retrieval_result}")
 
     # Support both list and dict returns
     if isinstance(retrieval_result, dict):
@@ -111,8 +160,10 @@ def run_query(request: QueryRequest):
     # ============================
     # Module 3: Reasoning
     # ============================
+    logger.info("Starting reasoning...")
     reasoner = GeminiReasoner()
     reasoning_out = reasoner.reason(triples, query)
+    logger.info("Reasoning finished.")
 
     reasoning_steps = reasoning_out.get("reasoning_steps", [])
     final_answer = reasoning_out.get("final_answer", "Insufficient data")
@@ -193,12 +244,23 @@ def run_query(request: QueryRequest):
     # ============================
     # Response to frontend
     # ============================
+
+    # Save History
+    if request.user_id:
+        database.add_history(request.user_id, query, final_answer)
+
     return {
-        "answer": final_answer,
+        "final_answer": final_answer,
         "reasoning_steps": reasoning_steps,
-        "confidence": confidence,
-        "tier": evaluation["tier"],
-        "confidence_explanation": explanation,
-        "entities": entities[:8],  # Top 8 entities
-        "evidenceUnits": evidenceUnits  # Top 10 triples
+        "confidence_score": confidence,
+        "confidence_tier": evaluation["tier"],
+        "explanation": explanation,
+        "structured_triples": triples,
+        "entities": entities[:8],  # Kept for backward compat if needed
+        "evidenceUnits": evidenceUnits  # Kept for backward compat
     }
+
+if __name__ == "__main__":
+    import uvicorn
+    logger.info("Starting uvicorn server...")
+    uvicorn.run(app, host="0.0.0.0", port=8000)

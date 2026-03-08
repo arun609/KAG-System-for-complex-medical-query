@@ -6,6 +6,9 @@ from config.api_keys import GEMINI_API_KEY
 from Scripts.reasoning.utils import format_knowledge, parse_gemini_output
 
 
+import logging
+logger = logging.getLogger(__name__)
+
 class GeminiReasoner:
     """
     LLM-based reasoning module.
@@ -67,6 +70,7 @@ class GeminiReasoner:
 
         except Exception as e:
             # 🔒 SAFE FALLBACK (Quota exceeded / API failure / Network issues)
+            logger.error(f"GEMINI API ERROR: {e}")
             reasoning_steps = [
                 "Reasoning could not be generated due to temporary API limitations."
             ]

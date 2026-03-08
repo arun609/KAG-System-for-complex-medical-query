@@ -1,3 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  /* Light Mode Defaults (Elegant Medical) */
+  --medical-primary: #0284c7;
+  /* Sky 600 */
+  --medical-secondary: #f0f9ff;
+  /* Sky 50 */
+  --medical-accent: #0d9488;
+  /* Teal 600 */
+  --medical-surface: #ffffff;
+  --medical-text: #0f172a;
+  /* Slate 900 */
+  --medical-muted: #64748b;
+  /* Slate 500 */
+}
+
+.dark {
+  /* Dark Mode Defaults (Deep Professional) */
+  --medical-primary: #38bdf8;
+  /* Sky 400 */
+  --medical-secondary: #020617;
+  /* Slate 950 */
+  --medical-accent: #2dd4bf;
+  /* Teal 400 */
+  --medical-surface: #1e293b;
+  /* Slate 800 */
+  --medical-text: #f1f5f9;
+  /* Slate 100 */
+  --medical-muted: #94a3b8;
+  /* Slate 400 */
+}
+
+body {
+  @apply bg-medical-secondary text-medical-text transition-colors duration-300 ease-in-out;
+  /* Standard system cursor restored */
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 dark:bg-slate-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-medical-primary;
+}

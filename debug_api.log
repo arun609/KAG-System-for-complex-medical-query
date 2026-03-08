@@ -1,0 +1,49 @@
+2026-02-20 09:53:50,596 - INFO - Starting uvicorn server...
+2026-02-20 09:55:01,814 - INFO - Starting retrieval for query: parkinson
+2026-02-20 09:55:10,918 - INFO - Retrieval finished. Result type: <class 'list'>
+2026-02-20 09:55:10,918 - INFO - Retrieval content: ['[disease_disease] Disease Parkinson disease is related to disease postencephalitic Parkinson disease.', '[disease_disease] Disease postencephalitic Parkinson disease is related to disease Parkinson disease.', '[disease_disease] Disease Parkinson disease is related to disease autosomal recessive Parkinson disease.', '[disease_disease] Disease Parkinson disease is related to disease parkinson disease, autosomal dominant.', '[disease_disease] Disease autosomal recessive Parkinson disease is related to disease Parkinson disease.']
+2026-02-20 09:55:10,919 - INFO - Starting reasoning...
+2026-02-20 09:55:13,634 - INFO - AFC is enabled with max remote calls: 10.
+2026-02-20 09:55:15,249 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-02-20 09:55:15,278 - INFO - Reasoning finished.
+2026-02-20 09:57:25,314 - INFO - Starting retrieval for query: gene associated with parkinson disease
+2026-02-20 09:59:22,270 - INFO - Starting uvicorn server...
+2026-02-20 10:02:08,131 - INFO - Starting uvicorn server...
+2026-02-20 10:04:03,593 - INFO - Starting retrieval for query: parkinson
+2026-02-20 10:04:11,800 - INFO - Retrieval finished. Result type: <class 'list'>
+2026-02-20 10:04:11,801 - INFO - Retrieval content: ['[disease_disease] Disease Parkinson disease is related to disease postencephalitic Parkinson disease.', '[disease_disease] Disease postencephalitic Parkinson disease is related to disease Parkinson disease.', '[disease_disease] Disease Parkinson disease is related to disease autosomal recessive Parkinson disease.', '[disease_disease] Disease Parkinson disease is related to disease parkinson disease, autosomal dominant.', '[disease_disease] Disease autosomal recessive Parkinson disease is related to disease Parkinson disease.']
+2026-02-20 10:04:11,801 - INFO - Starting reasoning...
+2026-02-20 10:04:13,918 - INFO - AFC is enabled with max remote calls: 10.
+2026-02-20 10:04:16,117 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent "HTTP/1.1 404 Not Found"
+2026-02-20 10:04:16,123 - INFO - Reasoning finished.
+2026-02-20 10:21:46,850 - INFO - Starting uvicorn server...
+2026-02-20 10:29:33,787 - INFO - Starting uvicorn server...
+2026-02-20 10:30:36,678 - INFO - Starting retrieval for query: parkinson
+2026-02-20 10:30:41,039 - INFO - Retrieval finished. Result type: <class 'list'>
+2026-02-20 10:30:41,040 - INFO - Retrieval content: ['[disease_disease] Disease Parkinson disease is related to disease postencephalitic Parkinson disease.', '[disease_disease] Disease postencephalitic Parkinson disease is related to disease Parkinson disease.', '[disease_disease] Disease Parkinson disease is related to disease autosomal recessive Parkinson disease.', '[disease_disease] Disease Parkinson disease is related to disease parkinson disease, autosomal dominant.', '[disease_disease] Disease autosomal recessive Parkinson disease is related to disease Parkinson disease.']
+2026-02-20 10:30:41,040 - INFO - Starting reasoning...
+2026-02-20 10:30:42,333 - INFO - AFC is enabled with max remote calls: 10.
+2026-02-20 10:30:43,819 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-02-20 10:30:43,841 - INFO - Reasoning finished.
+2026-02-20 10:38:36,519 - INFO - Starting uvicorn server...
+2026-02-20 10:39:12,541 - INFO - Starting retrieval for query: parkinson
+2026-02-20 10:39:12,880 - INFO - Starting retrieval for query: parkinson
+2026-02-20 10:39:21,096 - INFO - Retrieval finished. Result type: <class 'list'>
+2026-02-20 10:39:21,113 - INFO - Retrieval content: ['[disease_disease] Disease Parkinson disease is related to disease postencephalitic Parkinson disease.', '[disease_disease] Disease postencephalitic Parkinson disease is related to disease Parkinson disease.', '[disease_disease] Disease Parkinson disease is related to disease autosomal recessive Parkinson disease.', '[disease_disease] Disease Parkinson disease is related to disease parkinson disease, autosomal dominant.', '[disease_disease] Disease autosomal recessive Parkinson disease is related to disease Parkinson disease.']
+2026-02-20 10:39:21,129 - INFO - Starting reasoning...
+2026-02-20 10:39:21,663 - INFO - Retrieval finished. Result type: <class 'list'>
+2026-02-20 10:39:21,663 - INFO - Retrieval content: ['[disease_disease] Disease Parkinson disease is related to disease postencephalitic Parkinson disease.', '[disease_disease] Disease postencephalitic Parkinson disease is related to disease Parkinson disease.', '[disease_disease] Disease Parkinson disease is related to disease autosomal recessive Parkinson disease.', '[disease_disease] Disease Parkinson disease is related to disease parkinson disease, autosomal dominant.', '[disease_disease] Disease autosomal recessive Parkinson disease is related to disease Parkinson disease.']
+2026-02-20 10:39:21,664 - INFO - Starting reasoning...
+2026-02-20 10:39:22,838 - INFO - AFC is enabled with max remote calls: 10.
+2026-02-20 10:39:22,846 - INFO - AFC is enabled with max remote calls: 10.
+2026-02-20 10:39:24,233 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-02-20 10:39:24,247 - INFO - Reasoning finished.
+2026-02-20 10:39:24,333 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-02-20 10:39:24,335 - INFO - Reasoning finished.
+2026-02-20 10:42:00,281 - INFO - Starting retrieval for query: gene associated with heart attack
+2026-02-20 10:42:06,062 - INFO - Retrieval finished. Result type: <class 'list'>
+2026-02-20 10:42:06,062 - INFO - Retrieval content: ['[disease_protein] myocardial infarction is associated with the gene ATM.', '[disease_protein] myocardial infarction is associated with the gene SELL.', '[disease_protein] myocardial infarction is associated with the gene HP.', '[disease_protein] myocardial infarction is associated with the gene REN.', '[disease_protein] myocardial infarction is associated with the gene PLAT.']
+2026-02-20 10:42:06,062 - INFO - Starting reasoning...
+2026-02-20 10:42:07,570 - INFO - AFC is enabled with max remote calls: 10.
+2026-02-20 10:42:14,046 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-02-20 10:42:14,053 - INFO - Reasoning finished.

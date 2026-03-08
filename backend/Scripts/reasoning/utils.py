@@ -27,15 +27,23 @@ def parse_gemini_output(text):
         text_before_answer = text
 
     # 2. Extract Reasoning Steps
-    # Looks for lines starting with numbers like "1. "
     lines = text_before_answer.split('\n')
     for line in lines:
         stripped = line.strip()
-        if re.match(r'^\d+\.', stripped):
+        # Skip headers
+        if stripped.lower() in ["reasoning:", "reasoning steps:", "explanation:"]:
+            continue
+            
+        # Match Numbered list (1. ...) OR Bullet points (- ..., * ...)
+        if re.match(r'^(\d+\.|-|\*|•)\s+', stripped):
             reasoning.append(stripped)
 
-    # Fallback: if no numbered list, take non-empty lines
+    # Fallback: if no steps found via regex, just take non-empty lines from the reasoning text
     if not reasoning:
-        reasoning = [line.strip() for line in text_before_answer.split('\n') if line.strip()]
+        reasoning = [
+            line.strip() 
+            for line in text_before_answer.split('\n') 
+            if line.strip() and not line.strip().lower().startswith("reasoning")
+        ]
 
     return reasoning, final_answer

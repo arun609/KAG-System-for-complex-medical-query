@@ -1,22 +1,24 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+// frontend/src/services/api.js
 
-export const submitQuery = async (query) => {
+export const queryMedicalSystem = async (queryText) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/query`, {
-      method: 'POST',
+    // Connect to your Python Backend (Port 8000)
+    const response = await fetch("http://127.0.0.1:8000/query", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify({ query: queryText }),
     });
 
     if (!response.ok) {
-      throw new Error('API request failed');
+      throw new Error(`API Error: ${response.status}`);
     }
 
-    return await response.json();
+    const data = await response.json();
+    return data;
   } catch (error) {
-    console.error('API Error:', error);
-    throw error;
+    console.error("Connection failed:", error);
+    throw error; // Pass error back to UI to show the red alert box
   }
 };

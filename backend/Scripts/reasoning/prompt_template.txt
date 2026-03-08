@@ -21,7 +21,9 @@ Reasoning Instructions:
 
 Output Format:
 Reasoning:
-- Step-by-step explanation using ONLY the provided facts.
+1. [First step of reasoning]
+2. [Second step interaction]
+3. [Conclusion based on facts]
 
 Final Answer:
 - A concise, synthesized answer (3–5 sentences max).

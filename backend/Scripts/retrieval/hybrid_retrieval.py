@@ -8,11 +8,17 @@ from .intent import detect_intent
 from .retrieval_policy import RETRIEVAL_POLICY
 from .validators import validate_evidence
 
+import os
+
 # ================= PATHS =================
-CORPUS_FILE = "data/filtered/primekg_text_corpus_tagged.txt"
-BM25_FILE   = "data/filtered/bm25.pkl"
-EMB_FILE    = "data/filtered/embeddings.npy"
-MODEL_FILE  = "data/filtered/embedding_model.pkl"
+# Get the "backend/" directory (2 levels up from Scripts/retrieval)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+DATA_DIR = os.path.join(BASE_DIR, "data", "filtered")
+
+CORPUS_FILE = os.path.join(DATA_DIR, "primekg_text_corpus_tagged.txt")
+BM25_FILE   = os.path.join(DATA_DIR, "bm25.pkl")
+EMB_FILE    = os.path.join(DATA_DIR, "embeddings.npy")
+MODEL_FILE  = os.path.join(DATA_DIR, "embedding_model.pkl")
 # =========================================
 
 TOP_K = 5
@@ -90,8 +96,10 @@ with open(BM25_FILE, "rb") as f:
 
 embeddings = np.load(EMB_FILE)
 
-with open(MODEL_FILE, "rb") as f:
-    embed_model = pickle.load(f)
+# with open(MODEL_FILE, "rb") as f:
+#     embed_model = pickle.load(f)
+from sentence_transformers import SentenceTransformer
+embed_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 # ================= UTILITIES =================
 def normalize(text: str) -> str:
